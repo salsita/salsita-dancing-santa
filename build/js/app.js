@@ -13,7 +13,7 @@ var handLeft = $('.left-hand');
 var handRight = $('.right-hand');
 var stacheLeft = $('.mustache-left');
 var stacheRight = $('.mustache-right');
-var text = $('h1');
+var happyHolidays = $('.happy-holidays');
 var lights = $('#lights');
 
 // Bind our analyser to the media element source
@@ -42,10 +42,11 @@ var sceneTimings = {
   santaIn: 5.575,
   handWave: 7,
   partyOn: 22.5,
+  partyOnText: 22.7,
   headBop: 21.8,
   santaStare: 15,
   eyesWide: 19.5,
-  textReveal: 3
+  textReveal: 2.7
 }
 
 // Continuously loop and update frequency data
@@ -65,7 +66,7 @@ function updateScene() {
 
   // Santa in
   if ((!sceneStates.santaIn) && (audioElement.currentTime > sceneTimings.santaIn)) {
-    santa.velocity({ translateY: [ 0, [ 220, 20 ], '100%' ] }, { duration: 1800 });
+    santa.velocity({ bottom: [ -20, [ 220, 20 ], -400 ] }, { duration: 1800, mobileHA: false });
     sceneStates.santaIn = true;
   }
 
@@ -131,20 +132,24 @@ function updateScene() {
 
   // Text reveal
   if ((!sceneStates.textReveal) && (audioElement.currentTime > sceneTimings.textReveal)) {
-    text.velocity({ opacity: 1 }, { duration: 1000 });
+    happyHolidays.velocity({ opacity: 1, translateY: [ 0, [ 200, 20 ], 30 ], rotateZ: [ 0, -5 ] }, { duration: 1000 });
+    sceneStates.textReveal = true;
   }
 
   // Text bounce
-  if (audioElement.currentTime > sceneTimings.partyOn) {
+  if (audioElement.currentTime > sceneTimings.partyOnText) {
+    // Rescale frequency to range
     var scale = (((frequencyData[63] - 0) * (1.4 - 0.8)) / (255 - 0)) + 0.8;
-    text.css({
-      transform: 'scale(' + scale + ')'
+    happyHolidays.css({
+      transform: 'scale(' + scale + ')',
+      color: '#fff',
+      opacity: Math.random() * (1 - 0.6) + 0.6
     });
   }
 
   // Lights
   if((!sceneStates.lights) && (audioElement.currentTime > sceneTimings.partyOn)) {
-    lights.velocity({ opacity: 0.7 });
+    lights.velocity({ opacity: 0.7 }, { mobileHA: false });
   }
 
 }

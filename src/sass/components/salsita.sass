@@ -1,0 +1,42 @@
+.happy-holidays
+  position: relative
+  margin-top: 5vw
+  transform-origin: 50% 50%
+  font-family: 'Curely'
+  font-size: 14vh
+  text-align: center
+  color: #0b7585
+  opacity: 0
+  z-index: 1337
+  transition: opacity .05s ease-Out
+  text-shadow: 0 0 30px #fff
+
+  +media('<=tablet', 'portrait')
+    margin-top: 10vw
+
+  +media('<=tablet', 'landscape')
+    font-size: 20vh
+
+.from
+  display: none // TODO
+  position: relative
+  margin-top: 2vw
+  transform-origin: 50% 50%
+  font-family: 'Curely'
+  font-size: 10vh
+  text-align: center
+  color: #fff
+  z-index: 1337
+
+  +media('<=tablet', 'portrait')
+    margin-top: 4vw
+
+  +media('<=tablet', 'landscape')
+    font-size: 14vh
+
+.salsita
+  position: absolute
+  left: 0
+  top: 0
+  z-index: 1337
+
