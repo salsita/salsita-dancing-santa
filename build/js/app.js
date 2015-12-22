@@ -11,6 +11,14 @@ var frequencyBank = {};
 var audioFrame = 1;
 var preload = new createjs.LoadQueue();
 
+// Sources
+var sceneSources = {
+  audio: "assets/audio/wham.mp3",
+  video: "assets/video/193832158.mp4",
+  gif: "assets/img/video.gif",
+  bank: "js/frequencyBank.json"
+}
+
 // Santa elements
 var snowstorm = $('#snowfield');
 var santa = $('.santa');
@@ -247,6 +255,9 @@ function updateScene() {
 
 function runTheShow() {
 
+  // Add audio to element
+  $(audioElement).attr({src: sceneSources.audio});
+
   // Fade loader
   loading.removeClass('visible');
 
@@ -286,14 +297,14 @@ function runTheShow() {
 function loadAssets() {
   console.log('preloading assets');
   preload.addEventListener("complete", handleFileComplete);
-  preload.loadFile("assets/audio/wham.mp3");
+  preload.loadFile(sceneSources.audio);
   if (isIos) {
-    preload.loadFile("assets/img/video.gif");
+    preload.loadFile(sceneSources.gif);
   } else {
-    preload.loadFile("assets/video/193832158.mp4");
+    preload.loadFile(sceneSources.video);
   }
   if (isBad) {
-    preload.loadFile("js/frequencyBank.json");
+    preload.loadFile(sceneSources.bank);
   }
 }
 
@@ -324,7 +335,6 @@ preload.addEventListener("progress", function(e){
 console.log('userAgent: ' + navigator.userAgent);
 
 if (!hasAudioApi) {
-
   console.log('no audio api');
   notInThisBrowser.velocity({ left: [ '50%', '50%'], top: [ '50%', '50%'], translateX: [ '-50%', '-50%'], translateY: [ '-50%', '-50%'],  opacity: 1 }, { mobileHA: false });
 
