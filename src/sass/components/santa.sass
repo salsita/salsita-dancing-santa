@@ -3,19 +3,19 @@
   height: 400px
   position: absolute
   left: 50%
-  bottom: -400px
+  bottom: 0
   margin-left: -100px
+  margin-bottom: -400px
   z-index: 1
-  transition: all .1s ease-in
   transform-origin: 50% 100%
-  will-change: transform, margin-left, bottom
+  will-change: transform, margin-left, margin-bottom
 
   +media('<=tablet')
     transform-origin: 50% 100%
     transform: scale(0.7)
 
     +media('landscape')
-      transform: scale(0.5)
+      transform: scale(0.4)
 
 .face
   overflow: hidden
@@ -108,7 +108,7 @@
       transform: translateY(-50%)
       transform-origin: 50% 50%
       transition: transform 1s ease-out
-      will-change: transform, height, margin-top
+      will-change: transform, height, margin-top, background-color
 
       +state('.wide', eyes)
         transform: translateY(-50%) scale(1.3)

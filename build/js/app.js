@@ -1,8 +1,7 @@
-// Audio setup
-var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+// Checks
+var hasAudioApi = Modernizr.webaudio;
+var isBugged = /Android/i.test(navigator.userAgent);
 var audioElement = document.getElementById('player');
-var audioSrc = audioCtx.createMediaElementSource(audioElement);
-var analyser = audioCtx.createAnalyser();
 
 // Santa elements
 var snowstorm = $('#snowfield')
@@ -14,49 +13,69 @@ var handRight = $('.right-hand');
 var stacheLeft = $('.mustache-left');
 var stacheRight = $('.mustache-right');
 var happyHolidays = $('.happy-holidays');
+var from = $('.from');
 var lights = $('#lights');
+var playBtn = $('.droid-play');
+var notInThisBrowser = $('.not-in-this-browser');
+var reducedExperience = $('.reduced-experience');
 
-// Bind our analyser to the media element source
-audioSrc.connect(analyser);
-audioSrc.connect(audioCtx.destination);
+// Rand range
+function rand(min, max, whole) {
+  return void 0===whole||!1===whole?Math.random()*(max-min+1)+min:!isNaN(parseFloat(whole))&&0<=parseFloat(whole)&&20>=parseFloat(whole)?(Math.random()*(max-min+1)+min).toFixed(whole):Math.floor(Math.random()*(max-min+1))+min;
+};
 
-// Set amount of frequency bands
-var frequencyData = new Uint8Array(128);
-var lastFrequencyData = [];
+function setupAnimation() {
+  // Audio setup
+  window.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  window.videoElement = document.getElementById('lights');
+  window.audioSrc = audioCtx.createMediaElementSource(audioElement);
+  window.analyser = audioCtx.createAnalyser();
 
-// States
-var sceneStates = {
-  snowIn: false,
-  santaIn: false,
-  handWave: false,
-  headBop: false,
-  santaStare: false,
-  eyesWide: false,
-  santaDance: false,
-  textReveal: false,
-  lights: false
+  // Bind our analyser to the media element source
+  audioSrc.connect(analyser);
+  audioSrc.connect(audioCtx.destination);
+
+  // Set amount of frequency bands
+  window.frequencyData = new Uint8Array(128);
+  window.lastFrequencyData = [];
+
+  // States
+  window.sceneStates = {
+    snowIn: false,
+    santaIn: false,
+    handWave: false,
+    headBop: false,
+    santaStare: false,
+    eyesWide: false,
+    santaDance: false,
+    textReveal: false,
+    fromReveal: false,
+    lights: false
+  };
+
+  // Timings
+  window.sceneTimings = {
+    textReveal: 2.7,
+    fromReveal: 5,
+    santaIn: 5.575,
+    handWave: 7,
+    stacheStart: 9,
+    santaStare: 15,
+    eyesWide: 19.5,
+    headBop: 21.8,
+    partyOn: 22.5,
+    partyOnText: 22.7
+  };
 }
 
-// Timings
-var sceneTimings = {
-  santaIn: 5.575,
-  handWave: 7,
-  partyOn: 22.5,
-  partyOnText: 22.7,
-  headBop: 21.8,
-  santaStare: 15,
-  eyesWide: 19.5,
-  textReveal: 2.7
-}
-
-// Continuously loop and update frequency data
+// Loop and update frequency data
 function updateScene() {
   requestAnimationFrame(updateScene);
 
   // Copy frequency data to frequencyData array
   analyser.getByteFrequencyData(frequencyData);
 
-  console.log(audioElement.currentTime);
+  console.log('time: ' + audioElement.currentTime);
 
   // Snowstorm
   if (!sceneStates.snowIn) {
@@ -66,7 +85,7 @@ function updateScene() {
 
   // Santa in
   if ((!sceneStates.santaIn) && (audioElement.currentTime > sceneTimings.santaIn)) {
-    santa.velocity({ bottom: [ -20, [ 220, 20 ], -400 ] }, { duration: 1800, mobileHA: false });
+    santa.velocity({ marginBottom: [ -20, [ 220, 20 ], -400 ] }, { duration: 1800, mobileHA: false });
     sceneStates.santaIn = true;
   }
 
@@ -103,7 +122,7 @@ function updateScene() {
   if ((audioElement.currentTime > sceneTimings.partyOn) && (frequencyData[63] > 170)) {
     handLeft.css({ transform: 'rotate(10deg)' });
   } else {
-    handLeft.css({ transform: 'rotate(-5deg)' })
+    handLeft.css({ transform: 'rotate(-5deg)' });
   }
 
   // Eyes wide
@@ -130,10 +149,17 @@ function updateScene() {
     sceneStates.santaDance = true;
   }
 
-  // Text reveal
+  // Happy Holidays reveal
   if ((!sceneStates.textReveal) && (audioElement.currentTime > sceneTimings.textReveal)) {
-    happyHolidays.velocity({ opacity: 1, translateY: [ 0, [ 200, 20 ], 30 ], rotateZ: [ 0, -5 ] }, { duration: 1000 });
+    reducedExperience.velocity({ opacity: 0 });
+    happyHolidays.velocity({ opacity: 1, translateY: [ 0, [ 200, 20 ], 20 ], rotateZ: [ 0, [ 200, 20 ], 5 ], scale: [ 1, [ 200, 20 ], 0.8 ] }, { duration: 1400 });
     sceneStates.textReveal = true;
+  }
+
+  // From reveal
+  if ((!sceneStates.fromReveal) && (audioElement.currentTime > sceneTimings.fromReveal)) {
+    from.velocity({ opacity: 1, scale: [ 1, [ 300, 20 ], 0.1 ] }, { duration: 1000 });
+    sceneStates.fromReveal = true;
   }
 
   // Text bounce
@@ -143,7 +169,18 @@ function updateScene() {
     happyHolidays.css({
       transform: 'scale(' + scale + ')',
       color: '#fff',
-      opacity: Math.random() * (1 - 0.6) + 0.6
+      opacity: Math.random() * (1 - 0.6) + 0.6,
+      transformOrigin: '50%'
+    });
+  }
+
+  // From bounce
+  if (audioElement.currentTime > sceneTimings.partyOnText) {
+    // Rescale frequency to range
+    var scale = (((frequencyData[82] - 0) * (1.8 - 0.8)) / (255 - 0)) + 0.8;
+    from.css({
+      transform: 'scale(' + scale + ') rotate(' + rand(-5, 5) + 'deg)',
+      transformOrigin: '50%'
     });
   }
 
@@ -151,15 +188,45 @@ function updateScene() {
   if((!sceneStates.lights) && (audioElement.currentTime > sceneTimings.partyOn)) {
     lights.velocity({ opacity: 0.7 }, { mobileHA: false });
   }
+}
 
+
+function runTheShow() {
+  playBtn.velocity({ opacity: 1 }, { duration: 1000, mobileHA: false });
+  playBtn.on('click', function() {
+    // FadeOut Play controls
+    playBtn.velocity({ opacity: 0 }, { duration: 1000, mobileHA: false });
+    audioElement.play();
+    videoElement.play();
+
+    // Run the loop
+    updateScene();
+    $(this).off('click');
+  });
 }
 
 
 
-function runTheThing() {
-  // Play audio
-  audioElement.play();
 
-  // Run the loop
-  updateScene();
-}
+// Startup
+console.log('userAgent: ' + navigator.userAgent);
+
+if (!hasAudioApi) {
+  console.log('no audio api');
+  notInThisBrowser.velocity({ left: [ '50%', '50%'], top: [ '50%', '50%'], translateX: [ '-50%', '-50%'], translateY: [ '-50%', '-50%'],  opacity: 1 }, { mobileHA: false });
+} else {
+  // Android bug
+  if (isBugged) {
+    console.log('might be buggy');
+    reducedExperience.velocity({ left: [ '50%', '50%'], top: [ 0, 0 ], translateX: [ '-50%', '-50%'], translateY: [ 0, [ 200, 20 ], '-100%' ],  opacity: 1 }, { mobileHA: false });
+  }
+
+  // Prepare anim
+  setupAnimation();
+
+  // Bind audio load
+  $(audioElement).on('loadeddata', function(){
+    console.log('audio ready');
+    runTheShow();
+  })
+};

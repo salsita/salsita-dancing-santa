@@ -1,7 +1,7 @@
 .happy-holidays
   position: relative
   margin-top: 5vw
-  transform-origin: 50% 50%
+  transform-origin: 50%
   font-family: 'Curely'
   font-size: 14vh
   text-align: center
@@ -10,6 +10,7 @@
   z-index: 1337
   transition: opacity .05s ease-Out
   text-shadow: 0 0 30px #fff
+  will-change: opacity, transform
 
   +media('<=tablet', 'portrait')
     margin-top: 10vw
@@ -18,15 +19,18 @@
     font-size: 20vh
 
 .from
-  display: none // TODO
   position: relative
   margin-top: 2vw
   transform-origin: 50% 50%
   font-family: 'Curely'
-  font-size: 10vh
+  font-size: 8vh
   text-align: center
   color: #fff
+  opacity: 0
   z-index: 1337
+  text-shadow: 0 0 30px #fff
+  transition: transform 0.05s linear
+  will-change: opacity, transform
 
   +media('<=tablet', 'portrait')
     margin-top: 4vw
@@ -40,3 +44,65 @@
   top: 0
   z-index: 1337
 
+.droid-play
+  display: block
+  width: 100px
+  height: 100px
+  position: absolute
+  left: 50%
+  top: 50%
+  transform: translateX(-50%) translateY(-50%)
+  background-color: #0b7585
+  border-radius: 100%
+  z-index: 9999
+  opacity: 0
+  cursor: pointer
+  will-change: opacity
+
+  &:before
+    content: ''
+    position: absolute
+    left: 50%
+    top: 50%
+    transform: translateX(-40%) translateY(-50%)
+    width: 0
+    height: 0
+    border-top: 20px solid transparent
+    border-bottom: 20px solid transparent
+    border-left: 35px solid #fff
+
+.not-in-this-browser
+  display: inline-block
+  padding: 20px
+  position: absolute
+  left: 0
+  top: 0
+  transform: translateX(-100%) translateY(-100%)
+  background-color: #0b7585
+  color: #fff
+  border-radius: 20px
+  z-index: 10000
+  font-family: 'Curely'
+  font-size: 7vh
+  text-align: center
+  opacity: 0
+  will-change: opacity
+
+.reduced-experience
+  display: inline-block
+  padding: 10px
+  position: absolute
+  left: 0
+  top: 0
+  transform: translateX(-100%) translateY(-100%)
+  background-color: #0b7585
+  color: #fff
+  border-bottom-left-radius: 20px
+  border-bottom-right-radius: 20px
+  z-index: 10000
+  font-family: 'Curely'
+  font-size: 4vh
+  text-align: center
+  opacity: 0
+  white-space: nowrap
+  will-change: opacity
