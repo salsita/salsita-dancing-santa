@@ -1,12 +1,13 @@
 // Checks
 var ua = navigator.userAgent.toLowerCase();
 var hasAudioApi = Modernizr.webaudio;
-var isBugged = /android/i.test(ua);
-var isBroken = /iphone|ipad|ipod/i.test(ua) || ((ua.indexOf('safari') > -1) && (ua.indexOf('chrome') == -1));
+var isAndroid = /android/i.test(ua);
+var isIos = /iphone|ipad|ipod/i.test(ua);
+var isSafari = (ua.indexOf('safari') > -1) && (ua.indexOf('chrome') == -1);
 var audioElement = document.getElementById('player');
 
 // Santa elements
-var snowstorm = $('#snowfield')
+var snowstorm = $('#snowfield');
 var santa = $('.santa');
 var face = $('.face, .cap');
 var eyes = $('.eyes');
@@ -42,7 +43,6 @@ function setupAnimation() {
 
   // Set amount of frequency bands
   window.frequencyData = new Uint8Array(128);
-  window.lastFrequencyData = [];
 
   // States
   window.sceneStates = {
@@ -222,8 +222,10 @@ function runTheShow() {
     audioElement.play();
 
     // Safari video problems
-    if (!isBroken) {
+    if (!isIos) {
       videoElement.play();
+    } else {
+      $(videoElement).remove();
     }
 
     // Credits link
@@ -240,18 +242,15 @@ function runTheShow() {
   });
 }
 
-
-
-
 // Startup
 console.log('userAgent: ' + navigator.userAgent);
 
-if (!hasAudioApi || isBroken) {
+if (!hasAudioApi) {
   console.log('no audio api');
   notInThisBrowser.velocity({ left: [ '50%', '50%'], top: [ '50%', '50%'], translateX: [ '-50%', '-50%'], translateY: [ '-50%', '-50%'],  opacity: 1 }, { mobileHA: false });
 } else {
   // Android bug
-  if (isBugged || isBroken) {
+  if (isAndroid) {
     console.log('might be buggy');
     reducedExperience.velocity({ left: [ '50%', '50%'], top: [ 0, 0 ], translateX: [ '-50%', '-50%'], translateY: [ 0, [ 200, 20 ], '-100%' ],  opacity: 1 }, { mobileHA: false });
   }
