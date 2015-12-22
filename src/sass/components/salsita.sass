@@ -39,10 +39,17 @@
     font-size: 14vh
 
 .salsita
-  position: absolute
-  left: 0
-  top: 0
+  display: block
+  position: relative
+  transform-origin: 50% 50%
+  margin-top: 2vw
+  height: 12vh
   z-index: 1337
+  background: url(assets/img/salsita.png) no-repeat center center
+  background-size: auto 100%
+  opacity: 0
+  will-change: opacity
+  transform: translateX(-100%)
 
 .droid-play
   display: block
@@ -106,3 +113,46 @@
   opacity: 0
   white-space: nowrap
   will-change: opacity
+
+.credits-link
+  position: fixed
+  bottom: 5px
+  right: 5px
+  display: inline-block
+  color: #fff
+  font-family: sans-serif
+  font-size: 14px
+  cursor: pointer
+  opacity: 0.4
+  z-index: 1338
+
+.credits
+  max-width: 80%
+  max-height: 80vh
+  padding: 20px
+  border-radius: 20px
+  background-color: #0b7585
+  font-family: sans-serif
+  font-size: 20px
+  position: fixed
+  left: 0
+  top: 0
+  transform: translatex(-100%) translateY(-100%)
+  transition: opacity 1s ease-out
+  opacity: 0
+
+  ul
+    +unstyled-list()
+
+  li
+    line-height: 1.5
+
+  a
+    color: #fff
+
+  &.visible
+    opacity: 1
+    z-index: 10000
+    left: 50%
+    top: 50%
+    transform: translatex(-50%) translateY(-50%)

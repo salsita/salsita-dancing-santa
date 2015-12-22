@@ -18,6 +18,9 @@ var lights = $('#lights');
 var playBtn = $('.droid-play');
 var notInThisBrowser = $('.not-in-this-browser');
 var reducedExperience = $('.reduced-experience');
+var salsita = $('.salsita');
+var credits = $('.credits');
+var creditsLink = $('.credits-link');
 
 // Rand range
 function rand(min, max, whole) {
@@ -43,6 +46,7 @@ function setupAnimation() {
   window.sceneStates = {
     snowIn: false,
     santaIn: false,
+    slsReveal: false,
     handWave: false,
     headBop: false,
     santaStare: false,
@@ -162,6 +166,12 @@ function updateScene() {
     sceneStates.fromReveal = true;
   }
 
+  // Salsita reveal
+  if ((!sceneStates.slsReveal) && (audioElement.currentTime > sceneTimings.santaIn)) {
+    salsita.velocity({ opacity: 1, scale: [ 1, [ 300, 20 ], 0.1 ] }, { duration: 1000 });
+    sceneStates.slsReveal = true;
+  }
+
   // Text bounce
   if (audioElement.currentTime > sceneTimings.partyOnText) {
     // Rescale frequency to range
@@ -177,9 +187,19 @@ function updateScene() {
   // From bounce
   if (audioElement.currentTime > sceneTimings.partyOnText) {
     // Rescale frequency to range
-    var scale = (((frequencyData[82] - 0) * (1.8 - 0.8)) / (255 - 0)) + 0.8;
+    var scale = (((frequencyData[82] - 0) * (1.6 - 0.8)) / (255 - 0)) + 0.8;
     from.css({
-      transform: 'scale(' + scale + ') rotate(' + rand(-5, 5) + 'deg)',
+      transform: 'scale(' + scale + ') rotate(' + rand(-3, 3) + 'deg)',
+      transformOrigin: '50%'
+    });
+  }
+
+  // Salsita bounce
+  if (audioElement.currentTime > sceneTimings.partyOnText) {
+    // Rescale frequency to range
+    var scale = (((frequencyData[112] - 0) * (1.6 - 0.8)) / (255 - 0)) + 0.8;
+    salsita.css({
+      transform: 'scale(' + scale + ')',
       transformOrigin: '50%'
     });
   }
@@ -198,6 +218,14 @@ function runTheShow() {
     playBtn.velocity({ opacity: 0 }, { duration: 1000, mobileHA: false });
     audioElement.play();
     videoElement.play();
+
+    // Credits link
+    creditsLink.on('click', function(){
+      credits.addClass('visible');
+    })
+    credits.on('click', function(){
+      credits.removeClass('visible');
+    })
 
     // Run the loop
     updateScene();
