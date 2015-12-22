@@ -175,7 +175,6 @@ function updateScene() {
 
   // Happy Holidays reveal
   if ((!sceneStates.textReveal) && (audioElement.currentTime > sceneTimings.textReveal)) {
-    reducedExperience.velocity({ opacity: 0 });
     happyHolidays.velocity({ opacity: 1, translateY: [ 0, [ 200, 20 ], 20 ], rotateZ: [ 0, [ 200, 20 ], 5 ], scale: [ 1, [ 200, 20 ], 0.8 ] }, { duration: 1400 });
     sceneStates.textReveal = true;
   }
@@ -294,12 +293,6 @@ if (!hasAudioApi) {
 
   // Load media (Hi iOS, you suck)
   audioElement.load();
-
-  // Android bug
-  if (isBad) {
-    console.log('might be buggy');
-    reducedExperience.velocity({ left: [ '50%', '50%'], top: [ 0, 0 ], translateX: [ '-50%', '-50%'], translateY: [ 0, [ 200, 20 ], '-100%' ],  opacity: 1 }, { mobileHA: false });
-  }
 
   // Prepare anim
   setupAnimation();
