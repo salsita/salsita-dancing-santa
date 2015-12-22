@@ -1,8 +1,8 @@
 // Checks
 var ua = navigator.userAgent.toLowerCase();
 var hasAudioApi = Modernizr.webaudio;
+var isBugged = /android/i.test(ua);
 var isBroken = /iphone|ipad|ipod/i.test(ua) || ((ua.indexOf('safari') > -1) && (ua.indexOf('chrome') == -1));
-var isBugged = /Android/i.test(navigator.userAgent);
 var audioElement = document.getElementById('player');
 
 // Santa elements
@@ -218,8 +218,13 @@ function runTheShow() {
   playBtn.on('click', function() {
     // FadeOut Play controls
     playBtn.velocity({ opacity: 0 }, { duration: 1000, mobileHA: false });
+
     audioElement.play();
-    videoElement.play();
+
+    // Safari video problems
+    if (!isBroken) {
+      videoElement.play();
+    }
 
     // Credits link
     creditsLink.on('click', function(){
@@ -246,7 +251,7 @@ if (!hasAudioApi || isBroken) {
   notInThisBrowser.velocity({ left: [ '50%', '50%'], top: [ '50%', '50%'], translateX: [ '-50%', '-50%'], translateY: [ '-50%', '-50%'],  opacity: 1 }, { mobileHA: false });
 } else {
   // Android bug
-  if (isBugged) {
+  if (isBugged || isBroken) {
     console.log('might be buggy');
     reducedExperience.velocity({ left: [ '50%', '50%'], top: [ 0, 0 ], translateX: [ '-50%', '-50%'], translateY: [ 0, [ 200, 20 ], '-100%' ],  opacity: 1 }, { mobileHA: false });
   }
