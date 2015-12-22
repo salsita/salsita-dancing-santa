@@ -250,7 +250,7 @@ if (!hasAudioApi) {
   notInThisBrowser.velocity({ left: [ '50%', '50%'], top: [ '50%', '50%'], translateX: [ '-50%', '-50%'], translateY: [ '-50%', '-50%'],  opacity: 1 }, { mobileHA: false });
 } else {
   // Android bug
-  if (isAndroid) {
+  if (isAndroid || isIos) {
     console.log('might be buggy');
     reducedExperience.velocity({ left: [ '50%', '50%'], top: [ 0, 0 ], translateX: [ '-50%', '-50%'], translateY: [ 0, [ 200, 20 ], '-100%' ],  opacity: 1 }, { mobileHA: false });
   }
