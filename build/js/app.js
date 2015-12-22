@@ -9,6 +9,7 @@ var audioElement = document.getElementById('player');
 var videoElement = document.getElementById('lights');
 var frequencyBank = {};
 var audioFrame = 1;
+var preload = new createjs.LoadQueue();
 
 // Santa elements
 var snowstorm = $('#snowfield');
@@ -30,6 +31,7 @@ var salsita = $('.salsita');
 var credits = $('.credits');
 var creditsLink = $('.credits-link');
 var loading = $('.loading');
+var progressBar = $('.progress span');
 
 // Rand range
 function rand(min, max, whole) {
@@ -280,36 +282,60 @@ function runTheShow() {
   });
 }
 
+// Preload
+function loadAssets() {
+  console.log('preloading assets');
+  preload.addEventListener("complete", handleFileComplete);
+  preload.loadFile("assets/audio/wham.mp3");
+  if (isIos) {
+    preload.loadFile("assets/img/video.gif");
+  } else {
+    preload.loadFile("assets/video/193832158.mp4");
+  }
+  if (isBad) {
+    preload.loadFile("js/frequencyBank.json");
+  }
+}
+
+// Load complete
+function handleFileComplete(event) {
+  console.log('preloading done');
+  if (isBad) {
+    $.getJSON( "js/frequencyBank.json", function( data ) {
+      frequencyBank = data;
+      console.log('loaded frequencyBank');
+      runTheShow();
+    });
+  } else {
+    runTheShow();
+  }
+}
+
+// Load progress
+preload.addEventListener("progress", function(e){
+  console.log(e.loaded);
+  progressBar.css({
+    width: e.loaded * 100 + '%'
+  })
+});
+
+
 // Startup
 console.log('userAgent: ' + navigator.userAgent);
 
 if (!hasAudioApi) {
+
   console.log('no audio api');
   notInThisBrowser.velocity({ left: [ '50%', '50%'], top: [ '50%', '50%'], translateX: [ '-50%', '-50%'], translateY: [ '-50%', '-50%'],  opacity: 1 }, { mobileHA: false });
+
 } else {
 
   // Preload graphic
   loading.addClass('visible');
 
-  // Load media (Hi iOS, you suck)
-  audioElement.load();
-
   // Prepare anim
   setupAnimation();
 
-  // Bind audio load
-  $(audioElement).on('loadeddata', function(){
-    // Safari fake bank workaround
-    if (isBad) {
-      $.getJSON( "js/frequencyBank.json", function( data ) {
-        frequencyBank = data;
-        console.log('loaded frequencyBank');
-        console.log('audio ready');
-        runTheShow();
-      });
-    } else {
-      console.log('audio ready');
-      runTheShow();
-    }
-  })
+  // Preload stuff
+  loadAssets();
 };

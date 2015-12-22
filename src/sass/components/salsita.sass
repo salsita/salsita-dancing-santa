@@ -119,6 +119,23 @@
     top: 50%
     transform: translatex(-50%) translateY(-50%)
 
+  .progress
+    display: block
+    position: relative
+    height: 20px
+    border: 1px solid #fff
+    margin-top: 5px
+
+    span
+      display: block
+      position: absolute
+      left: 0
+      top: 0
+      height: 100%
+      width: 0
+      transition: width 0.1s ease-out
+      background-color: #e0653f
+
 .reduced-experience
   display: inline-block
   padding: 10px
