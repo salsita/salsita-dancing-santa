@@ -1,5 +1,7 @@
 // Checks
+var ua = navigator.userAgent.toLowerCase();
 var hasAudioApi = Modernizr.webaudio;
+var isBroken = /iphone|ipad|ipod/i.test(ua) || ((ua.indexOf('safari') > -1) && (ua.indexOf('chrome') == -1));
 var isBugged = /Android/i.test(navigator.userAgent);
 var audioElement = document.getElementById('player');
 
@@ -239,7 +241,7 @@ function runTheShow() {
 // Startup
 console.log('userAgent: ' + navigator.userAgent);
 
-if (!hasAudioApi) {
+if (!hasAudioApi || isBroken) {
   console.log('no audio api');
   notInThisBrowser.velocity({ left: [ '50%', '50%'], top: [ '50%', '50%'], translateX: [ '-50%', '-50%'], translateY: [ '-50%', '-50%'],  opacity: 1 }, { mobileHA: false });
 } else {
