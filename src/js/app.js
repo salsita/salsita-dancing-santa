@@ -94,7 +94,7 @@ const setupAnimation = (audioBuffer) => {
 const updateScene = (animationState) => {
   requestAnimationFrame(() => updateScene(animationState));
 
-  const frequencyData = new Uint8Array(32);
+  const frequencyData = new Uint8Array(128);
   animationState.analyser.getByteFrequencyData(frequencyData);
 
   // Snowstorm
@@ -116,7 +116,7 @@ const updateScene = (animationState) => {
   }
 
   // Left stache
-  if (frequencyData[1] > 220) {
+  if (frequencyData[5] > 220) {
     visualElements.stacheLeft.css({ transform: 'rotate(-15deg)' });
 
     // Left hand later
@@ -132,14 +132,14 @@ const updateScene = (animationState) => {
   }
 
   // Right stache
-  if (frequencyData[2] > 220) {
+  if (frequencyData[8] > 220) {
     visualElements.stacheRight.css({ transform: 'rotate(15deg)' });
   } else {
     visualElements.stacheRight.css({ transform: 'rotate(0)' });
   }
 
   // Rotate hand
-  if ((animationState.currentTime > sceneTimings.partyOn) && (frequencyData[16] > 170)) {
+  if ((animationState.currentTime > sceneTimings.partyOn) && (frequencyData[63] > 170)) {
     visualElements.handLeft.css({ transform: 'rotate(10deg)' });
   } else {
     visualElements.handLeft.css({ transform: 'rotate(-5deg)' });
@@ -190,7 +190,7 @@ const updateScene = (animationState) => {
   // Text bounce
   if (animationState.currentTime > sceneTimings.partyOnText) {
     // Rescale frequency to range
-    const scale = (((frequencyData[16] - 0) * (1.4 - 0.8)) / (255 - 0)) + 0.8;
+    const scale = (((frequencyData[63] - 0) * (1.4 - 0.8)) / (255 - 0)) + 0.8;
     visualElements.happyHolidays.css({
       transform: 'scale(' + scale + ')',
       color: '#fff',
@@ -202,7 +202,7 @@ const updateScene = (animationState) => {
   // From bounce
   if (animationState.currentTime > sceneTimings.partyOnText) {
     // Rescale frequency to range
-    const scale = (((frequencyData[20] - 0) * (1.6 - 0.8)) / (255 - 0)) + 0.8;
+    const scale = (((frequencyData[82] - 0) * (1.6 - 0.8)) / (255 - 0)) + 0.8;
     visualElements.fromText.css({
       transform: 'scale(' + scale + ') rotate(' + rand.real(-3, 3) + 'deg)',
       transformOrigin: '50%'
@@ -212,7 +212,7 @@ const updateScene = (animationState) => {
   // Salsita bounce
   if (animationState.currentTime > sceneTimings.partyOnText) {
     // Rescale frequency to range
-    const scale = (((frequencyData[28] - 0) * (1.6 - 0.8)) / (255 - 0)) + 0.8;
+    const scale = (((frequencyData[112] - 0) * (1.6 - 0.8)) / (255 - 0)) + 0.8;
     visualElements.salsita.css({
       transform: 'scale(' + scale + ')',
       transformOrigin: '50%'
