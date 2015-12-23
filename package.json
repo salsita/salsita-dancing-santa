@@ -1,25 +1,26 @@
 {
-  "name": "chilli-seed",
-  "version": "0.2.0",
-  "description": "",
+  "name": "salsita-xmas-2k15",
+  "version": "12.4.28",
+  "description": "Happy Holidays from Salsita!",
   "main": "gulpfile.js",
   "dependencies": {
     "codemirror": "^5.7.0",
     "gulp": "^3.9.0",
-    "lodash": "^3.10.1",
-    "node-sass": "^3.4.0-beta1"
+    "jquery": "^2.1.4",
+    "random-js": "^1.0.8"
   },
   "devDependencies": {
     "autoprefixer-core": "^5.2.1",
-    "gulp-combine-mq": "^0.4.0",
-    "gulp-consolidate": "^0.1.2",
-    "gulp-iconfont": "^5.0.1",
-    "gulp-minify-css": "^1.2.0",
-    "gulp-postcss": "^5.1.9",
-    "gulp-rename": "^1.2.2",
-    "gulp-ruby-sass": "^2.0.4",
-    "gulp-sass": "^2.0.4",
-    "gulp-stylus": "^2.0.5"
+    "babel-core": "^6.3.26",
+    "babel-loader": "^6.2.0",
+    "babel-preset-es2015": "^6.3.13",
+    "css-loader": "^0.23.1",
+    "file-loader": "^0.8.5",
+    "imports-loader": "^0.6.5",
+    "modernizr-webpack-plugin": "^1.0.5",
+    "style-loader": "^0.13.0",
+    "webpack": "^1.12.9",
+    "webpack-dev-server": "^1.14.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
