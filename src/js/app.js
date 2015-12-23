@@ -20,7 +20,7 @@ const visualElements = {
   stacheLeft: $('.mustache-left'),
   stacheRight: $('.mustache-right'),
   happyHolidays: $('.happy-holidays'),
-  from: $('.from'),
+  fromText: $('.from'),
   lights: $('#lights'),
   iosLights: $('.ios-lights'),
   playBtn: $('.droid-play'),
@@ -45,6 +45,8 @@ const sceneTimings = {
   partyOn: 22.5,
   partyOnText: 22.7
 };
+
+const rand = new Random();
 
 const setupAnimation = (audioBuffer) => {
   const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -92,7 +94,7 @@ const setupAnimation = (audioBuffer) => {
 const updateScene = (animationState) => {
   requestAnimationFrame(() => updateScene(animationState));
 
-  const frequencyData = new Uint8Array(128);
+  const frequencyData = new Uint8Array(32);
   animationState.analyser.getByteFrequencyData(frequencyData);
 
   // Snowstorm
@@ -114,7 +116,7 @@ const updateScene = (animationState) => {
   }
 
   // Left stache
-  if (frequencyData[5] > 220) {
+  if (frequencyData[1] > 220) {
     visualElements.stacheLeft.css({ transform: 'rotate(-15deg)' });
 
     // Left hand later
@@ -130,14 +132,14 @@ const updateScene = (animationState) => {
   }
 
   // Right stache
-  if (frequencyData[8] > 220) {
+  if (frequencyData[2] > 220) {
     visualElements.stacheRight.css({ transform: 'rotate(15deg)' });
   } else {
     visualElements.stacheRight.css({ transform: 'rotate(0)' });
   }
 
   // Rotate hand
-  if ((animationState.currentTime > sceneTimings.partyOn) && (frequencyData[63] > 170)) {
+  if ((animationState.currentTime > sceneTimings.partyOn) && (frequencyData[16] > 170)) {
     visualElements.handLeft.css({ transform: 'rotate(10deg)' });
   } else {
     visualElements.handLeft.css({ transform: 'rotate(-5deg)' });
@@ -175,7 +177,7 @@ const updateScene = (animationState) => {
 
   // From reveal
   if ((!animationState.scenes.fromReveal) && (animationState.currentTime > sceneTimings.fromReveal)) {
-    visualElements.from.velocity({ opacity: 1, scale: [ 1, [ 300, 20 ], 0.1 ] }, { duration: 1000 });
+    visualElements.fromText.velocity({ opacity: 1, scale: [ 1, [ 300, 20 ], 0.1 ] }, { duration: 1000 });
     animationState.scenes.fromReveal = true;
   }
 
@@ -188,7 +190,7 @@ const updateScene = (animationState) => {
   // Text bounce
   if (animationState.currentTime > sceneTimings.partyOnText) {
     // Rescale frequency to range
-    const scale = (((frequencyData[63] - 0) * (1.4 - 0.8)) / (255 - 0)) + 0.8;
+    const scale = (((frequencyData[16] - 0) * (1.4 - 0.8)) / (255 - 0)) + 0.8;
     visualElements.happyHolidays.css({
       transform: 'scale(' + scale + ')',
       color: '#fff',
@@ -200,9 +202,9 @@ const updateScene = (animationState) => {
   // From bounce
   if (animationState.currentTime > sceneTimings.partyOnText) {
     // Rescale frequency to range
-    const scale = (((frequencyData[82] - 0) * (1.6 - 0.8)) / (255 - 0)) + 0.8;
-    visualElements.from.css({
-      transform: 'scale(' + scale + ') rotate(' + Random.real(-3, 3) + 'deg)',
+    const scale = (((frequencyData[20] - 0) * (1.6 - 0.8)) / (255 - 0)) + 0.8;
+    visualElements.fromText.css({
+      transform: 'scale(' + scale + ') rotate(' + rand.real(-3, 3) + 'deg)',
       transformOrigin: '50%'
     });
   }
@@ -210,7 +212,7 @@ const updateScene = (animationState) => {
   // Salsita bounce
   if (animationState.currentTime > sceneTimings.partyOnText) {
     // Rescale frequency to range
-    const scale = (((frequencyData[112] - 0) * (1.6 - 0.8)) / (255 - 0)) + 0.8;
+    const scale = (((frequencyData[28] - 0) * (1.6 - 0.8)) / (255 - 0)) + 0.8;
     visualElements.salsita.css({
       transform: 'scale(' + scale + ')',
       transformOrigin: '50%'
