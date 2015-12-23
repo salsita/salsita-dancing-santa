@@ -1,6 +1,6 @@
 var path = require('path');
 var webpack = require('webpack');
-var moduleConfig = require('./webpack.shared.config').module;
+var sharedConfig = require('./webpack.shared.config');
 var aliasConfig = require('./webpack.shared.config').alias;
 
 module.exports = {
@@ -10,12 +10,12 @@ module.exports = {
   plugins: [
     new webpack.optimize.UglifyJsPlugin(),
     new webpack.DefinePlugin({__DEVELOPMENT__: false})
-  ],
+  ].concat(sharedConfig.plugins),
   output: {
-    path: path.join(__dirname, '../WhatWine/platforms/browser/www'),
+    path: path.join(__dirname, '../build'),
     filename: 'app.js'
   },
-  module: moduleConfig,
+  module: sharedConfig.module,
   resolve: {
     extensions: ['', '.js', '.jsx'],
     alias: aliasConfig
