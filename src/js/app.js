@@ -235,6 +235,8 @@ const runTheShow = (animationState) => {
 
   visualElements.playBtn.velocity({ opacity: 1 }, { duration: 1000, mobileHA: false });
   visualElements.playBtn.on('click', () => {
+    console.log('Happy holidays from the whole Salsita team!');
+
     // FadeOut Play
     visualElements.playBtn.velocity({ opacity: 0 }, { duration: 1000, mobileHA: false });
     visualElements.playBtn.velocity({ opacity: 0 }, { duration: 1000, mobileHA: false });
@@ -257,15 +259,11 @@ const runTheShow = (animationState) => {
     // Run the loop
     updateScene(animationState);
     $(this).off('click');
-
-    console.log('running the show');
   });
 };
 
 // All assets have been preloaded
 const handleComplete = (queue) => {
-  console.log('preloading done');
-
   if (isIos) {
     // Set the animated GIF as the background image as a fallback since we can't use video on iOS
     const urlCreator = window.URL || window.webkitURL;
@@ -287,10 +285,8 @@ const handleComplete = (queue) => {
 };
 
 const loadAssets = () => {
-  console.log('preloading assets');
   const queue = new createjs.LoadQueue(true);
   queue.on('progress', (e) => {
-    console.log(e.loaded);
     visualElements.progressBar.css({
       width: e.loaded * 100 + '%'
     });
@@ -309,7 +305,6 @@ const loadAssets = () => {
 
 // Startup
 if (!Modernizr.webaudio) {
-  console.log('no audio api');
   visualElements.notInThisBrowser.velocity({ left: [ '50%', '50%'], top: [ '50%', '50%'], translateX: [ '-50%', '-50%'], translateY: [ '-50%', '-50%'], opacity: 1 }, { mobileHA: false });
 } else {
   // Preload graphic
