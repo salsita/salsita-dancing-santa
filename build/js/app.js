@@ -1,13 +1,11 @@
+/*eslint-disable */
+
 // Checks
 var ua = navigator.userAgent.toLowerCase();
 var hasAudioApi = Modernizr.webaudio;
 var isAndroid = /android/i.test(ua);
 var isIos = /iphone|ipad|ipod/i.test(ua);
 var isSafari = (ua.indexOf('safari') > -1) && (ua.indexOf('chrome') == -1);
-var isBad = (isAndroid || isIos || isSafari);
-var audioElement = document.getElementById('player');
-var videoElement = document.getElementById('lights');
-var frequencyBank = {};
 var audioFrame = 1;
 var preload = new createjs.LoadQueue();
 
@@ -15,8 +13,7 @@ var preload = new createjs.LoadQueue();
 var sceneSources = {
   audio: "assets/audio/wham.mp3",
   video: "assets/video/193832158.mp4",
-  gif: "assets/img/video.gif",
-  bank: "js/frequencyBank.json"
+  gif: "assets/img/video.gif"
 }
 
 // Santa elements
@@ -40,6 +37,8 @@ var credits = $('.credits');
 var creditsLink = $('.credits-link');
 var loading = $('.loading');
 var progressBar = $('.progress span');
+var audioElement;
+var videoElement;
 
 // Rand range
 function rand(min, max, whole) {
@@ -48,19 +47,21 @@ function rand(min, max, whole) {
 
 function setupAnimation() {
 
-  if (!isBad) {
-    // Audio setup
-    window.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    window.audioSrc = audioCtx.createMediaElementSource(audioElement);
-    window.analyser = audioCtx.createAnalyser();
+  window.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  var audioSource = audioCtx.createBufferSource();
+  audioSource.buffer = audioElement;
+  audioSource.loop = true;
+  window.audioSrc = audioSource; // audioCtx.createMediaElementSource(audioElement);
 
-    // Bind our analyser to the media element source
-    audioSrc.connect(analyser);
-    audioSrc.connect(audioCtx.destination);
+  // Audio setup
+  window.analyser = audioCtx.createAnalyser();
 
-    // Set amount of frequency bands
-    window.frequencyData = new Uint8Array(128);
-  }
+  // Bind our analyser to the media element source
+  audioSrc.connect(analyser);
+  audioSrc.connect(audioCtx.destination);
+
+  // Set amount of frequency bands
+  window.frequencyData = new Uint8Array(128);
 
   // States
   window.sceneStates = {
@@ -98,18 +99,8 @@ function updateScene() {
 
   var newFrequencyData = [];
 
-  if (!isBad) {
-    // Copy frequency data to frequencyData array
-    analyser.getByteFrequencyData(frequencyData);
-    newFrequencyData = frequencyData;
-  } else {
-    // Get it from preset bank
-    newFrequencyData = frequencyBank[audioFrame];
-  }
-
-  // Save to bank
-  //frequencyBank[audioFrame] = JSON.parse("[" + Array.apply([], frequencyData).join(",") + "]");
-  //audioFrame = audioFrame + 1;
+  analyser.getByteFrequencyData(frequencyData);
+  newFrequencyData = frequencyData;
 
   // Snowstorm
   if (!sceneStates.snowIn) {
@@ -118,13 +109,13 @@ function updateScene() {
   }
 
   // Santa in
-  if ((!sceneStates.santaIn) && (audioElement.currentTime > sceneTimings.santaIn)) {
+  if ((!sceneStates.santaIn) && (audioCtx.currentTime > sceneTimings.santaIn)) {
     santa.velocity({ marginBottom: [ -20, [ 220, 20 ], -400 ] }, { duration: 1800, mobileHA: false });
     sceneStates.santaIn = true;
   }
 
   // Hand wave
-  if ((!sceneStates.handWave) && (audioElement.currentTime > sceneTimings.handWave)) {
+  if ((!sceneStates.handWave) && (audioCtx.currentTime > sceneTimings.handWave)) {
     handLeft.velocity({ rotateZ: [ '25deg', 'easeIn', 0 ]}, { duration: 600, loop: 3 });
     sceneStates.handWave = true;
   }
@@ -134,13 +125,13 @@ function updateScene() {
     stacheLeft.css({ transform: 'rotate(-15deg)' });
 
     // Left hand later
-    if (audioElement.currentTime > sceneTimings.partyOn) {
+    if (audioCtx.currentTime > sceneTimings.partyOn) {
       handRight.css({ transform: 'translateY(5px)' });
     }
   } else {
     stacheLeft.css({ transform: 'rotate(0)' });
 
-    if (audioElement.currentTime > sceneTimings.partyOn) {
+    if (audioCtx.currentTime > sceneTimings.partyOn) {
       handRight.css({ transform: 'translateY(0)' });
     }
   }
@@ -153,56 +144,56 @@ function updateScene() {
   }
 
   // Rotate hand
-  if ((audioElement.currentTime > sceneTimings.partyOn) && (newFrequencyData[63] > 170)) {
+  if ((audioCtx.currentTime > sceneTimings.partyOn) && (newFrequencyData[63] > 170)) {
     handLeft.css({ transform: 'rotate(10deg)' });
   } else {
     handLeft.css({ transform: 'rotate(-5deg)' });
   }
 
   // Eyes wide
-  if ((!sceneStates.eyesWide) && (audioElement.currentTime > sceneTimings.eyesWide)) {
+  if ((!sceneStates.eyesWide) && (audioCtx.currentTime > sceneTimings.eyesWide)) {
     eyes.addClass('wide');
     sceneStates.eyesWide = true;
   }
 
   // Head bop
-  if ((!sceneStates.headBop) && (audioElement.currentTime > sceneTimings.headBop)) {
+  if ((!sceneStates.headBop) && (audioCtx.currentTime > sceneTimings.headBop)) {
     face.addClass('bop');
     sceneStates.headBop = true;
   }
 
   // Santa looks at
-  if ((!sceneStates.santaStare) && (audioElement.currentTime > sceneTimings.santaStare)) {
+  if ((!sceneStates.santaStare) && (audioCtx.currentTime > sceneTimings.santaStare)) {
     eyes.addClass('stare');
     sceneStates.santaStare = true;
   }
 
   // Santa dance
-  if ((!sceneStates.santaDance) && (audioElement.currentTime > sceneTimings.partyOn)) {
+  if ((!sceneStates.santaDance) && (audioCtx.currentTime > sceneTimings.partyOn)) {
     santa.addClass('dance');
     sceneStates.santaDance = true;
   }
 
   // Happy Holidays reveal
-  if ((!sceneStates.textReveal) && (audioElement.currentTime > sceneTimings.textReveal)) {
+  if ((!sceneStates.textReveal) && (audioCtx.currentTime > sceneTimings.textReveal)) {
     happyHolidays.velocity({ opacity: 1, translateY: [ 0, [ 200, 20 ], 20 ], rotateZ: [ 0, [ 200, 20 ], 5 ], scale: [ 1, [ 200, 20 ], 0.8 ] }, { duration: 1400 });
     sceneStates.textReveal = true;
   }
 
   // From reveal
-  if ((!sceneStates.fromReveal) && (audioElement.currentTime > sceneTimings.fromReveal)) {
+  if ((!sceneStates.fromReveal) && (audioCtx.currentTime > sceneTimings.fromReveal)) {
     from.velocity({ opacity: 1, scale: [ 1, [ 300, 20 ], 0.1 ] }, { duration: 1000 });
     sceneStates.fromReveal = true;
   }
 
   // Salsita reveal
-  if ((!sceneStates.slsReveal) && (audioElement.currentTime > sceneTimings.santaIn)) {
+  if ((!sceneStates.slsReveal) && (audioCtx.currentTime > sceneTimings.santaIn)) {
     salsita.velocity({ opacity: 1, scale: [ 1, [ 300, 20 ], 0.1 ] }, { duration: 1000 });
     sceneStates.slsReveal = true;
   }
 
   // Text bounce
-  if (audioElement.currentTime > sceneTimings.partyOnText) {
+  if (audioCtx.currentTime > sceneTimings.partyOnText) {
     // Rescale frequency to range
     var scale = (((newFrequencyData[63] - 0) * (1.4 - 0.8)) / (255 - 0)) + 0.8;
     happyHolidays.css({
@@ -214,7 +205,7 @@ function updateScene() {
   }
 
   // From bounce
-  if (audioElement.currentTime > sceneTimings.partyOnText) {
+  if (audioCtx.currentTime > sceneTimings.partyOnText) {
     // Rescale frequency to range
     var scale = (((newFrequencyData[82] - 0) * (1.6 - 0.8)) / (255 - 0)) + 0.8;
     from.css({
@@ -224,7 +215,7 @@ function updateScene() {
   }
 
   // Salsita bounce
-  if (audioElement.currentTime > sceneTimings.partyOnText) {
+  if (audioCtx.currentTime > sceneTimings.partyOnText) {
     // Rescale frequency to range
     var scale = (((newFrequencyData[112] - 0) * (1.6 - 0.8)) / (255 - 0)) + 0.8;
     salsita.css({
@@ -234,20 +225,11 @@ function updateScene() {
   }
 
   // Lights
-  if((!sceneStates.lights) && (audioElement.currentTime > sceneTimings.partyOn)) {
+  if((!sceneStates.lights) && (audioCtx.currentTime > sceneTimings.partyOn)) {
     if (!isIos) {
       lights.velocity({ opacity: 0.7 }, { mobileHA: false });
     } else {
       iosLights.velocity({ opacity: 0.7 }, { mobileHA: false });
-    }
-  }
-
-  if (isBad) {
-    if (frequencyBank[audioFrame + 1]) {
-      audioFrame = audioFrame + 1;
-    } else {
-      console.log('resetting audioFrame');
-      audioFrame = 1;
     }
   }
 }
@@ -267,7 +249,7 @@ function runTheShow() {
     playBtn.velocity({ opacity: 0 }, { duration: 1000, mobileHA: false });
     playBtn.velocity({ opacity: 0 }, { duration: 1000, mobileHA: false });
 
-    audioElement.play();
+    audioSrc.start(0);
 
     // Safari video problems
     if (!isIos) {
@@ -293,43 +275,53 @@ function runTheShow() {
   });
 }
 
-// Preload
+ // Preload
 function loadAssets() {
   console.log('preloading assets');
-  preload.addEventListener("complete", handleFileComplete);
-  preload.loadFile(sceneSources.audio);
+  queue = new createjs.LoadQueue(true);
+  queue.on('progress', function(e){
+    console.log(e.loaded);
+    progressBar.css({
+      width: e.loaded * 100 + '%'
+    })
+  });
+  queue.on('complete', handleFileComplete);
   if (isIos) {
-    preload.loadFile(sceneSources.gif);
+    queue.loadFile(sceneSources.gif);
   } else {
-    preload.loadFile(sceneSources.video);
+    queue.loadFile({ id: 'video', src: sceneSources.video });
   }
-  if (isBad) {
-    preload.loadFile(sceneSources.bank);
-  }
+    queue.loadFile(sceneSources.gif);
+  //createjs.Sound.registerPlugins([createjs.HTMLAudioPlugin]);
+  queue.installPlugin(createjs.Sound);
+  queue.loadFile({ id: 'audio', src: sceneSources.audio });
+  queue.load();
 }
 
 // Load complete
 function handleFileComplete(event) {
   console.log('preloading done');
-  if (isBad) {
-    $.getJSON( "js/frequencyBank.json", function( data ) {
-      frequencyBank = data;
-      console.log('loaded frequencyBank');
-      runTheShow();
-    });
+
+  if (isIos) {
+    var urlCreator = window.URL || window.webkitURL;
+    var backgroundSrc = urlCreator.createObjectURL(queue.getResult(sceneSources.gif, true));
+    iosLights.css('background', 'url(' + backgroundSrc + ') no-repeat center center');
   } else {
-    runTheShow();
+    videoElement = queue.getResult('video');
+    videoElement.setAttribute('width', '100%');
+    videoElement.setAttribute('height', '100%');
+    videoElement.setAttribute('loop', 'loop');
+    lights.append(videoElement);
   }
+
+  audioElement = queue.getResult('audio');
+  //document.body.appendChild(audioElement);
+
+  // Prepare anim
+  setupAnimation();
+
+  runTheShow();
 }
-
-// Load progress
-preload.addEventListener("progress", function(e){
-  console.log(e.loaded);
-  progressBar.css({
-    width: e.loaded * 100 + '%'
-  })
-});
-
 
 // Startup
 console.log('userAgent: ' + navigator.userAgent);
@@ -342,9 +334,6 @@ if (!hasAudioApi) {
 
   // Preload graphic
   loading.addClass('visible');
-
-  // Prepare anim
-  setupAnimation();
 
   // Preload stuff
   loadAssets();
