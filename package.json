@@ -2,9 +2,16 @@
   "name": "salsita-xmas-2k15",
   "version": "12.4.28",
   "description": "Happy Holidays from Salsita!",
-  "main": "gulpfile.js",
+  "engines": {
+    "node": "0.12.2"
+  },
+  "scripts": {
+    "postinstall": "./node_modules/.bin/webpack --config=webpack/webpack.prod.config.js",
+    "start": "node server.js"
+  },
   "dependencies": {
     "codemirror": "^5.7.0",
+    "express": "^4.13.3",
     "gulp": "^3.9.0",
     "jquery": "^2.1.4",
     "random-js": "^1.0.8",
@@ -24,17 +31,7 @@
     "webpack": "^1.12.9",
     "webpack-dev-server": "^1.14.0"
   },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/salsita/chilli-seed.git"
-  },
-  "author": "mystrdat",
+  "author": "Filip Naumovic",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/salsita/chilli-seed/issues"
-  },
-  "homepage": "https://github.com/salsita/chilli-seed"
+  "homepage": "https://www.salsitasoft.com/"
 }
