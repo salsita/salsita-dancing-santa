@@ -254,10 +254,6 @@ const runTheShow = (animationState) => {
       $(videoElement).remove();
     }
 
-    // Credits link
-    visualElements.creditsLink.on('click', () => visualElements.credits.addClass('visible'));
-    visualElements.credits.on('click', () => visualElements.credits.removeClass('visible'));
-
     // Run the loop
     updateScene(animationState);
     $(this).off('click');
@@ -282,6 +278,10 @@ const handleComplete = (queue) => {
 
   // Prepare anim
   const animationState = setupAnimation(queue.getResult(sceneSources.audio));
+
+  // Credits link
+  visualElements.creditsLink.on('click', () => visualElements.credits.addClass('visible'));
+  visualElements.credits.on('click', () => visualElements.credits.removeClass('visible'));
 
   runTheShow(animationState);
 };
