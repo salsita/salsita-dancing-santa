@@ -2,6 +2,8 @@ import {} from 'velocity-animate';
 import {} from 'imports?$=jquery!./lib/snowstorm';
 import Random from 'random-js';
 
+import '../sass/main.sass';
+
 const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent.toLowerCase());
 
 const sceneSources = {
