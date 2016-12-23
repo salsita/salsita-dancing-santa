@@ -158,12 +158,37 @@
   bottom: 5px
   right: 5px
   display: inline-block
-  color: #fff
+  color: #000
   font-family: sans-serif
   font-size: 10px
+  text-transform: uppercase
   cursor: pointer
   opacity: 0.2
   z-index: 1338
+
+.credits-link-git
+  position: fixed
+  top: 10px
+  left: 10px
+  display: block
+  color: #000
+  font-family: sans-serif
+  font-size: 10px
+  text-transform: uppercase
+  cursor: pointer
+  opacity: 0.2
+  z-index: 1338
+  background-image: url(https://cdn4.iconfinder.com/data/icons/iconsimple-logotypes/512/github-512.png)
+  background-size: contain
+  background-repeat: no-repeat
+  text-indent: -999px
+  overflow: hidden
+  width: 40px
+  height: 40px
+  transition: opacity 0.3s linear
+
+  &:hover
+    opacity: 0.5
 
 .credits
   width: 400px
